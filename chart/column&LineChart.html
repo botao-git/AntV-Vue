@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>G2 柱状图</title>
+    <style>
+        #app {
+            margin: 50px auto;
+            text-align: center;
+        }
+    </style>
+</head>
+<!--vue-->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://gw.alipayobjects.com/os/lib/antv/g2/3.4.10/dist/g2.min.js"></script>
+
+<body>
+    <div id="app">
+        <h2>{{ msg }}</h2>
+        <div style="width: 50%; margin-left: 200px;" id="c1"></div>
+    </div>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                msg: '',
+                chart: null, // 创建一个chart变量
+                data: [{
+                    time: '10:15',
+                    call: 2,
+                    waiting: 3,
+                    people: 30
+                }, {
+                    time: '10:20',
+                    call: 13,
+                    waiting: 5,
+                    people: 50
+                }, {
+                    time: '10:25',
+                    call: 9,
+                    waiting: 1,
+                    people: 10
+                }, {
+                    time: '10:30',
+                    call: 5,
+                    waiting: 3,
+                    people: 30
+                }, {
+                    time: '10:35',
+                    call: 8,
+                    waiting: 8,
+                    people: 80
+                }, {
+                    time: '10:40',
+                    call: 13,
+                    waiting: 6,
+                    people: 60
+                }]
+            },
+            mounted() {
+                this.msg = 'vue案例'
+                // 初始化chart
+                this.chart = new G2.Chart({
+                    container: 'c1',
+                    forceFit: true,
+                    height: window.innerHeight
+                })
+                this.chart.source(this.data, {
+                    call: {
+                        min: 0
+                    },
+                    people: {
+                        min: 0
+                    },
+                    waiting: {
+                        min: 0
+                    }
+                })
+                this.chart.legend({
+                    custom: true,
+                    allowAllCanceled: true,
+                    items: [{
+                        value: 'waiting',
+                        marker: {
+                            symbol: 'square',
+                            fill: '#3182bd',
+                            radius: 5
+                        }
+                    }, {
+                        value: 'people',
+                        marker: {
+                            symbol: 'hyphen',
+                            stroke: '#fdae6b',
+                            radius: 5,
+                            lineWidth: 3
+                        }
+                    }],
+                });
+                this.chart.axis('people', {
+                    grid: null,
+                    label: {
+                        textStyle: {
+                            fill: '#fdae6b'
+                        }
+                    }
+                });
+                this.chart.interval().position('time*waiting').color('#3182bd');
+                this.chart.line().position('time*people').color('#fdae6b').size(3).shape('line');
+                this.chart.point().position('time*people').color('#fdae6b').size(3).shape('circle');
+                this.chart.render();
+                // 模拟更新数据
+                setInterval(() => {
+                    var newData = [{
+                    time: '10:20',
+                    call: 13,
+                    waiting: 5,
+                    people: 50
+                }, {
+                    time: '10:25',
+                    call: 9,
+                    waiting: 1,
+                    people: 10
+                }, {
+                    time: '10:30',
+                    call: 5,
+                    waiting: 3,
+                    people: 30
+                }, {
+                    time: '10:35',
+                    call: 8,
+                    waiting: 8,
+                    people: 80
+                }, {
+                    time: '10:40',
+                    call: 13,
+                    waiting: 6,
+                    people: 60
+                }]
+                    this.chart.source(newData);
+
+                    this.chart.guide().clear();// 清理guide
+                    this.chart.repaint();
+                }, 3000)
+            }
+        })
+    </script>
+</body>
+
+</html>
