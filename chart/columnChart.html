@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>G2 柱状图</title>
+    <style>
+        #app {
+            margin: 50px auto;
+            text-align: center;
+        }
+    </style>
+</head>
+<!--vue-->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://gw.alipayobjects.com/os/lib/antv/g2/3.4.10/dist/g2.min.js"></script>
+<body>
+    <div id="app">
+        <h2>{{ msg }}</h2>
+        <div style="width: 50%; margin-left: 200px;" id="c1"></div>
+    </div>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                msg: '',
+                chart: null, // 创建一个chart变量
+                data: [
+                    { genre: 'Sports', sold: 275 },
+                    { genre: 'Strategy', sold: 115 },
+                    { genre: 'Action', sold: 120 },
+                    { genre: 'Shooter', sold: 350 },
+                    { genre: 'Other', sold: 150 }
+                ]
+            },
+            mounted() {
+                this.msg = 'vue案例'
+                // 初始化chart
+                const chart = new G2.Chart({
+                    container: 'c1',
+                    width: 600,
+                    height: 300,
+                    forceFit:true,
+                })
+                chart.source(this.data)
+                chart
+                    .interval()
+                    .position('genre*sold')
+                    .color('genre');
+                this.chart = chart // 将chart变量赋值为vue中的chart, 后面可以直接使用this.chart调用图表对象
+                this.chart.render()
+                // 模拟更新数据
+                setInterval(()=>{
+                    var newData = [
+                        { genre: 'Sports', sold: 175 },
+                        { genre: 'Strategy', sold: 215 },
+                        { genre: 'Action', sold: 220 },
+                        { genre: 'Shooter', sold: 250 },
+                        { genre: 'Other', sold: 350 }
+                    ]
+                    this.chart.source(newData);
+
+                    this.chart.guide().clear();// 清理guide
+                    this.chart.repaint();
+                },3000)
+            }
+        })
+    </script>
+</body>
+</html>
